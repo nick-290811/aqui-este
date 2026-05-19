@@ -12,37 +12,55 @@ df = pd.read_csv(csv_path, index_col=0)
 # SOLUCIONES DE LOS EJERCICIOS DE PANDAS
 # ==========================================
 
-def DecilFinal(estudiante):
-    """
-    Recibe el nombre de un estudiante y retorna el decil de su nota final.
-    """
-    # Calcular la nota final como el promedio de los 4 parciales
-    notas_finales = df[['parcial1', 'parcial2', 'parcial3', 'parcial4']].mean(axis=1)
-    
-    # Calcular deciles del 1 al 10
-    deciles = pd.qcut(notas_finales, q=10, labels=False, duplicates='drop') + 1
-    
-    if estudiante in deciles.index:
-        return deciles[estudiante]
-    else:
-        return None
+#Punto 3 Escribir una función AprobadosPorParcial(umbral=3.0) que recibe un umbral de aprobación (por defecto 3.0) 
+# y retorna una Series de pandas cuyo index son los nombres de los parciales (parcial1, parcial2, parcial3, parcial4) 
+# y cuyos valores son la cantidad de estudiantes que obtuvieron una nota mayor o igual al umbral en cada parcial.
 
-def RankingFinal():
-    """
-    Retorna un DataFrame con todos los estudiantes ordenados de mayor a menor según su nota final.
-    """
-    df_ranking = df.copy()
-    
-    # Agregar columna de nota final (promedio)
-    df_ranking['nota_final'] = df_ranking[['parcial1', 'parcial2', 'parcial3', 'parcial4']].mean(axis=1)
-    
-    # Ordenar de mayor a menor
-    df_ranking = df_ranking.sort_values(by='nota_final', ascending=False)
-    
-    # Convertimos el index de nombres a una columna para no perderlo
-    df_ranking = df_ranking.reset_index()
-    
-    # El nuevo index refleja la posición en el ranking (1 = mejor nota)
-    df_ranking.index = range(1, len(df_ranking) + 1)
-    
-    return df_ranking
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('notas.csv', index_col=0)
+
+
+# Punto 3
+def AprobadosPorParcial(umbral=3.0):
+
+    # Cuenta cuántas notas son mayores o iguales al umbral
+    aprobados = (df >= umbral).sum()
+
+    return aprobados
+
+
+# Prueba
+# print(AprobadosPorParcial())
+
+
+#Punto 4 scribir una función TendenciaEstudiante(estudiante) que recibe el nombre de un estudiante y retorna el string 'mejora' si sus notas tienen
+# tendencia creciente a lo largo de los 4 parciales, 'desmejora' si tienen tendencia decreciente, o 'estable' en cualquier otro caso.
+#  Para determinar la tendencia se debe usar la pendiente de la regresión lineal sobre las 4 notas: pendiente positiva → 'mejora', negativa → 'desmejora', cero → 'estable'. 
+# La pendiente se puede calcular con numpy.polyfit.
+
+def TendenciaEstudiante(estudiante):
+
+    # Obtener las notas del estudiante
+    notas = df.loc[estudiante].values
+
+    # Eje x -> parciales 1,2,3,4
+    x = [1, 2, 3, 4]
+
+    # Calcular pendiente de regresión lineal
+    pendiente = np.polyfit(x, notas, 1)[0]
+
+    # Determinar tendencia
+    if pendiente > 0:
+        return 'mejora'
+
+    elif pendiente < 0:
+        return 'desmejora'
+
+    else:
+        return 'estable'
+
+
+# Prueba
+# print(TendenciaEstudiante('Estudiante0'))
