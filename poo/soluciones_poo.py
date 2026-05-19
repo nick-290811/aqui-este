@@ -129,3 +129,72 @@ class PolinomiosDerivables(Polinomio):
         
         return PolinomiosDerivables([b, m])
 
+
+
+# Ejercicio del Cajero
+
+class Cajero():
+
+    def __init__(self, n1, n2, n5):
+
+        # Billetes de 10000, 20000 y 50000
+        self.n1 = n1
+        self.n2 = n2
+        self.n5 = n5
+
+
+    def retiro(self, x):
+
+        # Verificar múltiplo de 10000
+        if x % 10000 != 0:
+            return "La cantidad debe ser múltiplo de 10000"
+
+        cantidad = x
+
+        # Cantidad de billetes a entregar
+        b5 = min(cantidad // 50000, self.n5)
+        cantidad -= b5 * 50000
+
+        b2 = min(cantidad // 20000, self.n2)
+        cantidad -= b2 * 20000
+
+        b1 = min(cantidad // 10000, self.n1)
+        cantidad -= b1 * 10000
+
+        # Si no pudo entregar exactamente el dinero
+        if cantidad != 0:
+            return "No es posible realizar el retiro"
+
+        # Actualizar billetes del cajero
+        self.n5 -= b5
+        self.n2 -= b2
+        self.n1 -= b1
+
+        return f"Retiro exitoso: {b5} billetes de 50000, {b2} billetes de 20000 y {b1} billetes de 10000"
+
+
+    def consignacion(self, n1, n2, n5):
+
+        self.n1 += n1
+        self.n2 += n2
+        self.n5 += n5
+
+        return "Consignación realizada correctamente"
+
+
+    def verificar_estado(self):
+
+        return f"""
+Billetes de 10000: {self.n1}
+Billetes de 20000: {self.n2}
+Billetes de 50000: {self.n5}
+"""
+
+
+# Prueba = 
+# Cajero(10, 5, 2)
+# print(c.verificar_estado())
+# print(c.retiro(90000))
+# print(c.verificar_estado())
+# print(c.consignacion(2, 1, 1))
+# print(c.verificar_estado())
