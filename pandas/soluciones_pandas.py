@@ -26,3 +26,23 @@ def DecilFinal(estudiante):
         return deciles[estudiante]
     else:
         return None
+
+def RankingFinal():
+    """
+    Retorna un DataFrame con todos los estudiantes ordenados de mayor a menor según su nota final.
+    """
+    df_ranking = df.copy()
+    
+    # Agregar columna de nota final (promedio)
+    df_ranking['nota_final'] = df_ranking[['parcial1', 'parcial2', 'parcial3', 'parcial4']].mean(axis=1)
+    
+    # Ordenar de mayor a menor
+    df_ranking = df_ranking.sort_values(by='nota_final', ascending=False)
+    
+    # Convertimos el index de nombres a una columna para no perderlo
+    df_ranking = df_ranking.reset_index()
+    
+    # El nuevo index refleja la posición en el ranking (1 = mejor nota)
+    df_ranking.index = range(1, len(df_ranking) + 1)
+    
+    return df_ranking
