@@ -15,3 +15,15 @@ def f2(func):
             return None
             
     return wrapper
+
+def f3i(n):
+    n = abs(n)
+    while n >= 10:
+        n //= 10
+    return n
+
+def f3r(n):
+    n = abs(n)
+    if n < 10:
+        return n
+    return f3r(n // 10)
