@@ -94,3 +94,38 @@ class Polinomio:
         for i, coef in enumerate(self.L):
             total += coef * (x ** i)
         return total
+
+class PolinomiosDerivables(Polinomio):
+    
+    def grado(self):
+        """
+        Retorna el grado del polinomio.
+        """
+        if len(self.L) == 1 and self.L[0] == 0:
+            return 0
+        return len(self.L) - 1
+        
+    def derivada(self):
+        """
+        Retorna un nuevo PolinomiosDerivables que representa la derivada.
+        """
+        if self.grado() == 0:
+            return PolinomiosDerivables([0])
+            
+        nueva_L = [self.L[i] * i for i in range(1, len(self.L))]
+        return PolinomiosDerivables(nueva_L)
+        
+    def recta_tangente(self, x_0):
+        """
+        Retorna la recta tangente en el punto x_0 como un PolinomiosDerivables.
+        y - f(x_0) = f'(x_0) * (x - x_0) -> y = f'(x_0)*x + (f(x_0) - f'(x_0)*x_0)
+        """
+        f_x0 = self.evaluar(x_0)
+        deriv = self.derivada()
+        fp_x0 = deriv.evaluar(x_0)
+        
+        m = fp_x0
+        b = f_x0 - fp_x0 * x_0
+        
+        return PolinomiosDerivables([b, m])
+
